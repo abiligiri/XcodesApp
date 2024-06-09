@@ -1,0 +1,93 @@
+name: Developer Id Build
+
+on:
+  push:
+    branches:
+      - developer_id
+  pull_request:
+
+jobs:
+  test:
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install Certificates
+        env:
+          BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
+          P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+          MACOS_CERTIFICATE: ${{ secrets.PROD_MACOS_CERTIFICATE }}
+          MACOS_CERTIFICATE_NAME: ${{ secrets.PROD_MACOS_CERTIFICATE_NAME }}
+        run: |
+          # create variables
+          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+          PROD_CERTIFICATE_PATH=$RUNNER_TEMP/prod_certificate.p12
+
+          # import certificate and provisioning profile from secrets
+          echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
+
+          # create temporary keychain
+          echo "Creating Keychain ..."
+          security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security default-keychain -s $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+
+          # import develoopment certificate to keychain
+          echo "Importing Development Certificate ..."
+          security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+
+          echo $MACOS_CERTIFICATE | base64 --decode -o $PROD_CERTIFICATE_PATH
+
+          # import developer id certificate to keychain
+          echo "Importing Developer ID Certificate ..."
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security import $PROD_CERTIFICATE_PATH -k $KEYCHAIN_PATH -P "$P12_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PWD" $KEYCHAIN_PATH
+          security list-keychain -d user -s $KEYCHAIN_PATH
+      - name: Select Xcode
+        run: |
+          sudo xcode-select -s /Applications/Xcode_15.4.app
+      - name: Archive App
+        run: |
+          OUTPUT_DIR=$RUNNER_TEMP/output
+          mkdir -p $OUTPUT_DIR
+          xcodebuild archive -project Xcodes.xcodeproj -scheme Xcodes -archivePath $OUTPUT_DIR/Xcodes.xcarchive
+
+          mkdir -p $OUTPUT_DIR/Product
+          xcodebuild -archivePath $OUTPUT_DIR/Xcodes.xcarchive -exportArchive -exportPath $OUTPUT_DIR/Product/Xcodes -exportOptionsPlist "${GITHUB_WORKSPACE}/Scripts/export_options.plist"
+      - name: Notarize app bundle
+        env:
+          PROD_MACOS_NOTARIZATION_APPLE_ID: ${{ secrets.PROD_MACOS_NOTARIZATION_APPLE_ID }}
+          PROD_MACOS_NOTARIZATION_TEAM_ID: ${{ secrets.PROD_MACOS_NOTARIZATION_TEAM_ID }}
+          PROD_MACOS_NOTARIZATION_PWD: ${{ secrets.PROD_MACOS_NOTARIZATION_PWD }}
+        run: |
+          # Store the notarization credentials so that we can prevent a UI password dialog
+          # from blocking the CI
+          OUTPUT_DIR=$RUNNER_TEMP/output
+
+          echo "Creating zip file for notarization ..."
+          cp -a "$OUTPUT_DIR/Product/Xcodes/Xcodes.app" "$OUTPUT_DIR/Product/Xcodes.app"
+          /usr/bin/ditto -c -k --keepParent "$OUTPUT_DIR/Product/Xcodes.app" "$OUTPUT_DIR/Product/Xcodes.zip"
+
+          xcrun notarytool store-credentials "notarytool-profile" --apple-id "$PROD_MACOS_NOTARIZATION_APPLE_ID" --team-id "$PROD_MACOS_NOTARIZATION_TEAM_ID" --password "$PROD_MACOS_NOTARIZATION_PWD"
+
+          echo "Notarize app ..."
+          xcrun notarytool submit "$OUTPUT_DIR/Product/Xcodes.zip" --keychain-profile "notarytool-profile" --wait
+
+          echo "Attach staple ..."
+          xcrun stapler staple "$OUTPUT_DIR/Product/Xcodes.app"
+      - name: Create the ZIP file
+        run: |
+          OUTPUT_DIR=$RUNNER_TEMP/output
+          mkdir artifacts
+          /usr/bin/ditto -c -k --keepParent "$OUTPUT_DIR/Product/Xcodes.app" artifacts/Xcodes.zip
+      - name: Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Xcodes.zip
+          path: artifacts/Xcodes.zip
