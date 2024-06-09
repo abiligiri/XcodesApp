@@ -15,11 +15,13 @@ struct UpdatesPreferencePane: View {
                         "AutomaticInstallNewVersion",
                         isOn: $autoInstallationType.isAutoInstalling
                     )
-                    
+                    .disabled(updater.disableAutoInstallNewVersions)
+
                     Toggle(
                         "IncludePreRelease",
                         isOn: $autoInstallationType.isAutoInstallingBeta
                     )
+                    .disabled(updater.disableIncludePrereleaseVersions)
                 }
                 .fixedSize(horizontal: false, vertical: true)
             }
@@ -34,12 +36,14 @@ struct UpdatesPreferencePane: View {
                         isOn: $updater.automaticallyChecksForUpdates
                     )
                     .fixedSize(horizontal: true, vertical: false)
-                    
+                    .disabled(updater.disableAutoUpdateXcodesApp)
+
                     Toggle(
                         "IncludePreRelease",
                         isOn: $updater.includePrereleaseVersions
                     )
-                    
+                    .disabled(updater.disableAutoUpdateXcodesAppPrereleaseVersions)
+
                     Button("CheckNow") {
                         updater.checkForUpdates()
                     }
@@ -83,12 +87,18 @@ class ObservableUpdater: ObservableObject {
     private var lastUpdateCheckDateObservation: NSKeyValueObservation?
     @Published var includePrereleaseVersions = false {
         didSet {
-            UserDefaults.standard.setValue(includePrereleaseVersions, forKey: "includePrereleaseVersions")
-            
+            Current.defaults.set(includePrereleaseVersions, forKey: "includePrereleaseVersions")
+
             updaterDelegate.includePrereleaseVersions = includePrereleaseVersions
         }
     }
-    
+
+    var disableAutoInstallNewVersions: Bool { PreferenceKey.autoInstallation.isManaged() }
+    var disableIncludePrereleaseVersions: Bool { PreferenceKey.includePrereleaseVersions.isManaged() }
+
+    var disableAutoUpdateXcodesApp: Bool { PreferenceKey.autoUpdateXcodesApp.isManaged() }
+    var disableAutoUpdateXcodesAppPrereleaseVersions: Bool { PreferenceKey.autoUpdateXcodesAppPrerelease.isManaged() }
+
     init() {
         updater = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: updaterDelegate, userDriverDelegate: nil).updater
         
@@ -111,7 +121,7 @@ class ObservableUpdater: ObservableObject {
                 self.lastUpdateCheckDate = updater.lastUpdateCheckDate
             }
         )
-        includePrereleaseVersions = UserDefaults.standard.bool(forKey: "includePrereleaseVersions")
+        includePrereleaseVersions = Current.defaults.bool(forKey: "includePrereleaseVersions") ?? false
     }
     
     func checkForUpdates() {

@@ -27,7 +27,8 @@ struct DownloadPreferencePane: View {
                 }
             }
             .groupBoxStyle(PreferencesGroupBoxStyle())
-            
+            .disabled(appState.disableDataSourceChange)
+
             GroupBox(label: Text("Downloader")) {
                 VStack(alignment: .leading) {
                     Picker("Downloader", selection: $downloader) {
@@ -38,7 +39,8 @@ struct DownloadPreferencePane: View {
                     }
                     .labelsHidden()
                     .fixedSize()
-                    
+                    .disabled(appState.disableDownloaderChange)
+
                     Text("DownloaderDescription")
                         .font(.footnote)
                         .foregroundStyle(.secondary)

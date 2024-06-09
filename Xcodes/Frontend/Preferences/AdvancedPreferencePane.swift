@@ -36,6 +36,7 @@ struct AdvancedPreferencePane: View {
                             self.appState.installPath = path.string
                         }
                     }
+                    .disabled(appState.disableInstallPathChange)
                     Text("InstallPathDescription")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
@@ -72,6 +73,7 @@ struct AdvancedPreferencePane: View {
                             self.appState.localPath = path.string
                         }
                     }
+                    .disabled(appState.disableLocalPathChange)
                     Text("LocalCachePathDescription")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
