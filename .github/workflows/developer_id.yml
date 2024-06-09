@@ -38,6 +38,6 @@ jobs:
       - name: Build App
         run: |
           OURPUT_DIR=$RUNNER_TEMP/output
-          mkdir $OUTPUT_DIR
+          mkdir -p $OUTPUT_DIR
           xcodebuild build -scheme Xcodes -project Xcodes.xcodeproj -configuration Release -destination 'generic/platform=macOS' BUILD_DIR=$OUTPUT_DIR
 
