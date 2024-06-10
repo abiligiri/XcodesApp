@@ -83,9 +83,11 @@ jobs:
           xcrun stapler staple "$OUTPUT_DIR/Product/Xcodes.app"
       - name: Create the DMG file
         run: |
-          hdiutil create -format UDZO -srcfolder "$OUTPUT_DIR/Product/Xcodes.app" $OUTPUT_DIR/Xcodes.dmg
+          OUTPUT_DIR=$RUNNER_TEMP/output
+          mkdir artifacts
+          hdiutil create -format UDZO -srcfolder "$OUTPUT_DIR/Product/Xcodes.app" artifacts/Xcodes.dmg
       - name: Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: Xcodes.dmg
-          path: $OUTPUT_DIR/Xcodes.dmg
+          path: artifacts/Xcodes.dmg
