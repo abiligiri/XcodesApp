@@ -51,6 +51,7 @@ jobs:
           MACOS_CI_KEYCHAIN_PWD: ${{ secrets.KEYCHAIN_PASSWORD }}
         run: |
           # create variables
+          OUTPUT_DIR=$RUNNER_TEMP/output
           PROD_CERTIFICATE_PATH=$RUNNER_TEMP/prod_certificate.p12
           PROD_KEYCHAIN_PATH=$RUNNER_TEMP/prod-signing.keychain-db
 
@@ -79,7 +80,7 @@ jobs:
         run: |
           # Store the notarization credentials so that we can prevent a UI password dialog
           # from blocking the CI
-
+          OUTPUT_DIR=$RUNNER_TEMP/output
           echo "Create keychain profile"
           xcrun notarytool store-credentials "notarytool-profile" --apple-id "$PROD_MACOS_NOTARIZATION_APPLE_ID" --team-id "$PROD_MACOS_NOTARIZATION_TEAM_ID" --password "$PROD_MACOS_NOTARIZATION_PWD"
 
