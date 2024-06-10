@@ -65,7 +65,7 @@ jobs:
           security create-keychain -p "$MACOS_CI_KEYCHAIN_PWD" $PROD_KEYCHAIN_PATH
           security default-keychain -s $PROD_KEYCHAIN_PATH
           security unlock-keychain -p "$MACOS_CI_KEYCHAIN_PWD" $PROD_KEYCHAIN_PATH
-          security import certificate.p12 -k $PROD_KEYCHAIN_PATH -P "$MACOS_CERTIFICATE_PWD" -T /usr/bin/codesign
+          security import $PROD_CERTIFICATE_PATH -k $PROD_KEYCHAIN_PATH -P "$MACOS_CERTIFICATE_PWD" -T /usr/bin/codesign
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$MACOS_CI_KEYCHAIN_PWD" $PROD_KEYCHAIN_PATH
 
           # We finally codesign our app bundle, specifying the Hardened runtime option
