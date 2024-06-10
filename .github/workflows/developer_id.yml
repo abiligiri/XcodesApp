@@ -67,9 +67,9 @@ jobs:
           security unlock-keychain -p "$MACOS_CI_KEYCHAIN_PWD" $PROD_KEYCHAIN_PATH
           security import $PROD_CERTIFICATE_PATH -k $PROD_KEYCHAIN_PATH -P "$MACOS_CERTIFICATE_PWD" -T /usr/bin/codesign
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$MACOS_CI_KEYCHAIN_PWD" $PROD_KEYCHAIN_PATH
+          security list-keychain -d user -s $PROD_KEYCHAIN_PATH
 
           # We finally codesign our app bundle, specifying the Hardened runtime option
-
           /usr/bin/codesign --force -s "$MACOS_CERTIFICATE_NAME" --options runtime $OUTPUT_DIR/Release/Xcodes.app -v
       - name: Notarize app bundle
         env:
