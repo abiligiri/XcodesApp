@@ -100,4 +100,11 @@ jobs:
           # validated by macOS even when an internet connection is not available.
           echo "Attach staple"
           xcrun stapler staple $OUTPUT_DIR/Release/Xcodes.app
-
+      - name: Create the DMG file
+        run: |
+          hdiutil create -format UDZO -srcfolder $OUTPUT_DIR/Release/Xcodes.app $OUTPUT_DIR/Xcodes.dmg
+      - name: Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Xcodes.dmg
+          path: $OUTPUT_DIR/Xcodes.dmg
