@@ -81,11 +81,11 @@ jobs:
 
           echo "Attach staple ..."
           xcrun stapler staple "$OUTPUT_DIR/Product/Xcodes.app"
-      - name: Create the DMG file
+      - name: Create the ZIP file
         run: |
           OUTPUT_DIR=$RUNNER_TEMP/output
           mkdir artifacts
-          hdiutil create -format UDZO -srcfolder "$OUTPUT_DIR/Product/Xcodes.app" artifacts/Xcodes.dmg
+          /usr/bin/ditto -c -k --keepParent "$OUTPUT_DIR/Product/Xcodes.app" artifacts/Xcodes.zip
       - name: Artifacts
         uses: actions/upload-artifact@v3
         with:
