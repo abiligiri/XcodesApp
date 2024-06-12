@@ -89,5 +89,5 @@ jobs:
       - name: Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: Xcodes.dmg
+          name: Xcodes.zip
           path: artifacts/Xcodes.zip
