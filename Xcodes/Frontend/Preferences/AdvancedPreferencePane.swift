@@ -95,7 +95,8 @@ struct AdvancedPreferencePane: View {
                     }
                     .labelsHidden()
                     .pickerStyle(.inline)
-                    
+                    .disabled(appState.onSelectActionTypeDisabled)
+
                     Text(appState.onSelectActionType.detailedDescription)
                         .font(.footnote)
                         .foregroundStyle(.secondary)

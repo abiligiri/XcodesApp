@@ -18,11 +18,11 @@ enum PreferenceKey: String {
     case onSelectActionType
     case showOpenInRosettaOption
     case autoInstallation
+    case SUEnableAutomaticChecks
     case includePrereleaseVersions
-    case autoUpdateXcodesApp
-    case autoUpdateXcodesAppPrerelease
     case downloader
     case dataSource
+    case xcodeListCategory
 
     func isManaged() -> Bool { UserDefaults.standard.objectIsForced(forKey: self.rawValue) }
 }
@@ -121,6 +121,8 @@ class AppState: ObservableObject {
         }
     }
     
+    var onSelectActionTypeDisabled: Bool { PreferenceKey.onSelectActionType.isManaged() }
+
     @Published var showOpenInRosettaOption = false {
         didSet {
             Current.defaults.set(showOpenInRosettaOption, forKey: "showOpenInRosettaOption")
@@ -158,10 +160,6 @@ class AppState: ObservableObject {
     var dataSource: DataSource {
         Current.defaults.string(forKey: "dataSource").flatMap(DataSource.init(rawValue:)) ?? .default
     }
-
-    var disableDataSourceChange: Bool { PreferenceKey.dataSource.isManaged() }
-
-    var disableDownloaderChange: Bool { PreferenceKey.downloader.isManaged() }
 
     var savedUsername: String? {
         Current.defaults.string(forKey: "username")

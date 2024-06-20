@@ -48,7 +48,8 @@ struct UpdatesPreferencePane: View {
                         updater.checkForUpdates()
                     }
                     .padding(.top)
-                    
+                    .disabled(updater.disableAutoUpdateXcodesApp)
+
                     Text(String(format: localizeString("LastChecked"), lastUpdatedString))
                         .font(.footnote)
                         .foregroundStyle(.secondary)
@@ -94,10 +95,10 @@ class ObservableUpdater: ObservableObject {
     }
 
     var disableAutoInstallNewVersions: Bool { PreferenceKey.autoInstallation.isManaged() }
-    var disableIncludePrereleaseVersions: Bool { PreferenceKey.includePrereleaseVersions.isManaged() }
+    var disableIncludePrereleaseVersions: Bool { PreferenceKey.autoInstallation.isManaged() }
 
-    var disableAutoUpdateXcodesApp: Bool { PreferenceKey.autoUpdateXcodesApp.isManaged() }
-    var disableAutoUpdateXcodesAppPrereleaseVersions: Bool { PreferenceKey.autoUpdateXcodesAppPrerelease.isManaged() }
+    var disableAutoUpdateXcodesApp: Bool { PreferenceKey.SUEnableAutomaticChecks.isManaged() }
+    var disableAutoUpdateXcodesAppPrereleaseVersions: Bool { PreferenceKey.includePrereleaseVersions.isManaged() }
 
     init() {
         updater = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: updaterDelegate, userDriverDelegate: nil).updater
