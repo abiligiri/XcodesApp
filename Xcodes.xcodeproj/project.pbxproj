@@ -1384,7 +1384,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = ZU6GR6B2FY;
+				DEVELOPMENT_TEAM = GNNPCAAT48;
 				INFOPLIST_FILE = XcodesTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1407,7 +1407,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = ZU6GR6B2FY;
+				DEVELOPMENT_TEAM = GNNPCAAT48;
 				INFOPLIST_FILE = XcodesTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

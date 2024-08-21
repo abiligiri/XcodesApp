@@ -23,6 +23,7 @@ enum PreferenceKey: String {
     case downloader
     case dataSource
     case xcodeListCategory
+    case allowedMajorVersions
 
     func isManaged() -> Bool { UserDefaults.standard.objectIsForced(forKey: self.rawValue) }
 }
