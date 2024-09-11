@@ -24,6 +24,7 @@ enum PreferenceKey: String {
     case dataSource
     case xcodeListCategory
     case allowedMajorVersions
+    case hideSupportXcodes
 
     func isManaged() -> Bool { UserDefaults.standard.objectIsForced(forKey: self.rawValue) }
 }
