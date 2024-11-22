@@ -22340,6 +22340,16 @@
         }
       }
     },
+    "UsePrivilegedHelperForFileOperations" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perform file operations using Privileged Helper"
+          }
+        }
+      }
+    },
     "UseUnxipExperiment" : {
       "localizations" : {
         "ar" : {

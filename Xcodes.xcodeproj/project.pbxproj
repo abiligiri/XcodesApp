@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		150235A12CED5E2200F6ECBF /* FileOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 150235A02CED5E2200F6ECBF /* FileOperations.swift */; };
+		150235A22CED5E2200F6ECBF /* FileOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 150235A02CED5E2200F6ECBF /* FileOperations.swift */; };
+		15F5B8902CCF09B900705E2F /* CryptoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15F5B88F2CCF09B900705E2F /* CryptoKit.framework */; };
 		33027E342CA8C18800CB387C /* LibFido2Swift in Frameworks */ = {isa = PBXBuildFile; productRef = 334A932B2CA885A400A5E079 /* LibFido2Swift */; };
 		3328073F2CA5E2C80036F691 /* SignInSecurityKeyPinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3328073E2CA5E2C80036F691 /* SignInSecurityKeyPinView.swift */; };
 		332807412CA5EA820036F691 /* SignInSecurityKeyTouchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332807402CA5EA820036F691 /* SignInSecurityKeyTouchView.swift */; };
@@ -122,6 +125,7 @@
 		E84E4F522B323A5F003F3959 /* CornerRadiusModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84E4F512B323A5F003F3959 /* CornerRadiusModifier.swift */; };
 		E84E4F542B333864003F3959 /* PlatformsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84E4F532B333864003F3959 /* PlatformsListView.swift */; };
 		E84E4F572B335094003F3959 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = E84E4F562B335094003F3959 /* OrderedCollections */; };
+		E862D43B2CC8B26F00BAA376 /* SRP in Frameworks */ = {isa = PBXBuildFile; productRef = E862D43A2CC8B26F00BAA376 /* SRP */; };
 		E86671272B309D2F0048559A /* PlatformsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86671262B309D2F0048559A /* PlatformsView.swift */; };
 		E87AB3C52939B65E00D72F43 /* Hardware.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87AB3C42939B65E00D72F43 /* Hardware.swift */; };
 		E87DD6EB25D053FA00D86808 /* Progress+.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87DD6EA25D053FA00D86808 /* Progress+.swift */; };
@@ -195,6 +199,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		150235A02CED5E2200F6ECBF /* FileOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileOperations.swift; sourceTree = "<group>"; };
+		1542A3022CEF05AE00DB71B0 /* App.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = App.xcconfig; sourceTree = "<group>"; };
+		1542A3032CEF05B800DB71B0 /* Tests.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Tests.xcconfig; sourceTree = "<group>"; };
+		1542A3042CEF05C900DB71B0 /* Helper.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Helper.xcconfig; sourceTree = "<group>"; };
+		15F5B88F2CCF09B900705E2F /* CryptoKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoKit.framework; path = System/Library/Frameworks/CryptoKit.framework; sourceTree = SDKROOT; };
 		3328073E2CA5E2C80036F691 /* SignInSecurityKeyPinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInSecurityKeyPinView.swift; sourceTree = "<group>"; };
 		332807402CA5EA820036F691 /* SignInSecurityKeyTouchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInSecurityKeyTouchView.swift; sourceTree = "<group>"; };
 		36741BFC291E4FDB00A85AAE /* DownloadPreferencePane.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadPreferencePane.swift; sourceTree = "<group>"; };
@@ -351,6 +360,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				15F5B8902CCF09B900705E2F /* CryptoKit.framework in Frameworks */,
 				33027E342CA8C18800CB387C /* LibFido2Swift in Frameworks */,
 				CABFA9E42592F08E00380FEE /* Version in Frameworks */,
 				CABFA9FD2592F13300380FEE /* LegibleError in Frameworks */,
@@ -358,6 +368,7 @@
 				CA9FF86D25951C6E00E47BAF /* XCModel in Frameworks */,
 				CABFA9F82592F0F900380FEE /* KeychainAccess in Frameworks */,
 				E83FDC442CBB649100679C6B /* Sparkle in Frameworks */,
+				E862D43B2CC8B26F00BAA376 /* SRP in Frameworks */,
 				CAA858CD25A3D8BC00ACF8C0 /* ErrorHandling in Frameworks */,
 				E8C0EB1A291EF43E0081528A /* XcodesKit in Frameworks */,
 				E8FD5727291EE4AC001E004C /* AsyncNetworkService in Frameworks */,
@@ -414,6 +425,7 @@
 		CA538A12255A4F7C00E64DD7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				15F5B88F2CCF09B900705E2F /* CryptoKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -450,6 +462,7 @@
 			isa = PBXGroup;
 			children = (
 				CA9FF8CE25959A9700E47BAF /* HelperXPCShared.swift */,
+				150235A02CED5E2200F6ECBF /* FileOperations.swift */,
 			);
 			path = HelperXPCShared;
 			sourceTree = "<group>";
@@ -587,6 +600,9 @@
 				CAD2E79F2449574E00113D76 /* Products */,
 				CA538A12255A4F7C00E64DD7 /* Frameworks */,
 				CA452BE025A2354D0072DFA4 /* Recovered References */,
+				1542A3022CEF05AE00DB71B0 /* App.xcconfig */,
+				1542A3032CEF05B800DB71B0 /* Tests.xcconfig */,
+				1542A3042CEF05C900DB71B0 /* Helper.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -723,6 +739,7 @@
 				E84E4F562B335094003F3959 /* OrderedCollections */,
 				E83FDC432CBB649100679C6B /* Sparkle */,
 				334A932B2CA885A400A5E079 /* LibFido2Swift */,
+				E862D43A2CC8B26F00BAA376 /* SRP */,
 			);
 			productName = XcodesMac;
 			productReference = CAD2E79E2449574E00113D76 /* Xcodes.app */;
@@ -877,6 +894,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				150235A22CED5E2200F6ECBF /* FileOperations.swift in Sources */,
 				CA9FF8D025959A9700E47BAF /* HelperXPCShared.swift in Sources */,
 				CA42DD7325AEB04300BC0B0C /* Logger.swift in Sources */,
 				CA9FF8DB25959B4000E47BAF /* XPCDelegate.swift in Sources */,
@@ -903,6 +921,7 @@
 				B0C6AD0D2AD91D7900E64698 /* IconView.swift in Sources */,
 				CA9FF9362595B44700E47BAF /* HelperClient.swift in Sources */,
 				B0C6AD042AD6E65700E64698 /* ReleaseDateView.swift in Sources */,
+				150235A12CED5E2200F6ECBF /* FileOperations.swift in Sources */,
 				CAA8587C25A2B37900ACF8C0 /* IsTesting.swift in Sources */,
 				CABFA9CA2592EEEA00380FEE /* AppState+Update.swift in Sources */,
 				CA44901F2463AD34003D8213 /* Tag.swift in Sources */,
@@ -1051,7 +1070,6 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGNING_SUBJECT_ORGANIZATIONAL_UNIT = GNNPCAAT48;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -1084,14 +1102,14 @@
 		};
 		CA8FB636256E154800469DA5 /* Test */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1542A3022CEF05AE00DB71B0 /* App.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGNING_SUBJECT_ORGANIZATIONAL_UNIT = GNNPCAAT48;
 				CODE_SIGN_ENTITLEMENTS = Xcodes/Resources/XcodesTest.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20;
+				CURRENT_PROJECT_VERSION = 30;
 				DEVELOPMENT_ASSET_PATHS = "\"Xcodes/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = NO;
@@ -1103,7 +1121,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 2.3.0;
+				MARKETING_VERSION = 2.4.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.xcodesorg.xcodesapp;
 				PRODUCT_NAME = Xcodes;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1113,6 +1131,7 @@
 		};
 		CA8FB637256E154800469DA5 /* Test */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1542A3032CEF05B800DB71B0 /* Tests.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1137,12 +1156,11 @@
 		};
 		CA9FF8B22595967A00E47BAF /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1542A3042CEF05C900DB71B0 /* Helper.xcconfig */;
 			buildSettings = {
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CODE_SIGNING_SUBJECT_ORGANIZATIONAL_UNIT = GNNPCAAT48;
 				CODE_SIGN_STYLE = Automatic;
 				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
-				DEVELOPMENT_TEAM = GNNPCAAT48;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/$(TARGET_NAME)/Info.plist";
 				MARKETING_VERSION = 2.0.0;
@@ -1162,9 +1180,9 @@
 		};
 		CA9FF8B32595967A00E47BAF /* Test */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1542A3042CEF05C900DB71B0 /* Helper.xcconfig */;
 			buildSettings = {
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CODE_SIGNING_SUBJECT_ORGANIZATIONAL_UNIT = GNNPCAAT48;
 				CODE_SIGN_ENTITLEMENTS = com.xcodesorg.xcodesapp.Helper/com.xcodesorg.xcodesapp.HelperTest.entitlements;
 				CODE_SIGN_STYLE = Manual;
 				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
@@ -1189,13 +1207,12 @@
 		};
 		CA9FF8B42595967A00E47BAF /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1542A3042CEF05C900DB71B0 /* Helper.xcconfig */;
 			buildSettings = {
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CODE_SIGNING_SUBJECT_ORGANIZATIONAL_UNIT = GNNPCAAT48;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
-				DEVELOPMENT_TEAM = GNNPCAAT48;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/$(TARGET_NAME)/Info.plist";
 				MARKETING_VERSION = 2.0.0;
@@ -1246,7 +1263,6 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGNING_SUBJECT_ORGANIZATIONAL_UNIT = GNNPCAAT48;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -1310,7 +1326,6 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGNING_SUBJECT_ORGANIZATIONAL_UNIT = GNNPCAAT48;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -1336,16 +1351,15 @@
 		};
 		CAD2E7BD2449575100113D76 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1542A3022CEF05AE00DB71B0 /* App.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGNING_SUBJECT_ORGANIZATIONAL_UNIT = GNNPCAAT48;
 				CODE_SIGN_ENTITLEMENTS = Xcodes/Resources/Xcodes.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20;
+				CURRENT_PROJECT_VERSION = 30;
 				DEVELOPMENT_ASSET_PATHS = "\"Xcodes/Preview Content\"";
-				DEVELOPMENT_TEAM = GNNPCAAT48;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Xcodes/Resources/Info.plist;
@@ -1355,7 +1369,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 2.3.0;
+				MARKETING_VERSION = 2.4.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.xcodesorg.xcodesapp;
 				PRODUCT_NAME = Xcodes;
 				SWIFT_VERSION = 5.0;
@@ -1364,16 +1378,15 @@
 		};
 		CAD2E7BE2449575100113D76 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1542A3022CEF05AE00DB71B0 /* App.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGNING_SUBJECT_ORGANIZATIONAL_UNIT = GNNPCAAT48;
 				CODE_SIGN_ENTITLEMENTS = Xcodes/Resources/Xcodes.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20;
+				CURRENT_PROJECT_VERSION = 30;
 				DEVELOPMENT_ASSET_PATHS = "\"Xcodes/Preview Content\"";
-				DEVELOPMENT_TEAM = GNNPCAAT48;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Xcodes/Resources/Info.plist;
@@ -1383,7 +1396,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 2.3.0;
+				MARKETING_VERSION = 2.4.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.xcodesorg.xcodesapp;
 				PRODUCT_NAME = Xcodes;
 				SWIFT_VERSION = 5.0;
@@ -1392,12 +1405,12 @@
 		};
 		CAD2E7C02449575100113D76 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1542A3032CEF05B800DB71B0 /* Tests.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = GNNPCAAT48;
 				INFOPLIST_FILE = XcodesTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1414,13 +1427,13 @@
 		};
 		CAD2E7C12449575100113D76 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1542A3032CEF05B800DB71B0 /* Tests.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = GNNPCAAT48;
 				INFOPLIST_FILE = XcodesTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1645,6 +1658,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E84E4F552B335094003F3959 /* XCRemoteSwiftPackageReference "swift-collections" */;
 			productName = OrderedCollections;
+		};
+		E862D43A2CC8B26F00BAA376 /* SRP */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SRP;
 		};
 		E8C0EB19291EF43E0081528A /* XcodesKit */ = {
 			isa = XCSwiftPackageProductDependency;
