@@ -863,6 +863,22 @@ class AppStateTests: XCTestCase {
         }
     }
 
+    func test_InstallNotificationTitle_DoesNotDuplicateMajorVersion() {
+        XCTAssertEqual(
+            AppState.installNotificationTitle(for: Version(major: 27, minor: 0, patch: 0, prereleaseIdentifiers: ["beta", "4"])),
+            "27.0 Beta 4"
+        )
+        XCTAssertEqual(
+            AppState.installNotificationTitle(for: Version(major: 26, minor: 5, patch: 0)),
+            "26.5"
+        )
+        // Stable release with patch
+        XCTAssertEqual(
+            AppState.installNotificationTitle(for: Version(major: 10, minor: 2, patch: 1)),
+            "10.2.1"
+        )
+    }
+
     private func recordAllXcodeInstallStates(during operation: () async throws -> Void) async throws -> [[XcodeInstallState]] {
         var states: [[XcodeInstallState]] = []
         var cancellable: AnyCancellable?
