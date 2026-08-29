@@ -63,7 +63,10 @@ jobs:
             CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="$MACOS_CERTIFICATE_NAME" \
             DEVELOPMENT_TEAM="$PROD_MACOS_NOTARIZATION_TEAM_ID" \
-            PROVISIONING_PROFILE_SPECIFIER=""
+            PROVISIONING_PROFILE_SPECIFIER="" \
+            ARCHS=arm64 \
+            ONLY_ACTIVE_ARCH=NO \
+            EXCLUDED_ARCHS=x86_64
 
           mkdir -p $OUTPUT_DIR/Product
           xcodebuild -archivePath $OUTPUT_DIR/Xcodes.xcarchive -exportArchive -exportPath $OUTPUT_DIR/Product/Xcodes -exportOptionsPlist "${GITHUB_WORKSPACE}/Scripts/export_options.plist"
