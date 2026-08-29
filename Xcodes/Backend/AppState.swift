@@ -29,6 +29,7 @@ enum PreferenceKey: String {
     case enableGroupedXcodeList
     case expandedMajorXcodeVersions
     case expandedMinorXcodeVersions
+    case usePrivilegeHelperForFileOperations
 
     func isManaged() -> Bool { UserDefaults.standard.objectIsForced(forKey: self.rawValue) }
 }
@@ -147,6 +148,12 @@ class AppState: ObservableObject {
 
     var onSelectActionTypeDisabled: Bool { PreferenceKey.onSelectActionType.isManaged() }
 
+    @Published var usePrivilegedHelperForFileOperations = false {
+        didSet {
+            Current.defaults.set(usePrivilegedHelperForFileOperations, forKey: PreferenceKey.usePrivilegeHelperForFileOperations.rawValue)
+        }
+    }
+
     @Published var showOpenInRosettaOption = false {
         didSet {
             Current.defaults.set(showOpenInRosettaOption, forKey: "showOpenInRosettaOption")
@@ -263,6 +270,7 @@ class AppState: ObservableObject {
         showOpenInRosettaOption = Current.defaults.bool(forKey: "showOpenInRosettaOption") ?? false
         terminateAfterLastWindowClosed = Current.defaults.bool(forKey: "terminateAfterLastWindowClosed") ?? false
         enableGroupedXcodeList = Current.defaults.get(forKey: PreferenceKey.enableGroupedXcodeList.rawValue) as? Bool ?? true
+        usePrivilegedHelperForFileOperations = Current.defaults.bool(forKey: PreferenceKey.usePrivilegeHelperForFileOperations.rawValue) ?? false
     }
 
     // MARK: Timer
@@ -759,13 +767,8 @@ class AppState: ObservableObject {
         }
 
         guard
-            var installedXcodePath = xcode.installedPath
+            let installedXcodePath = xcode.installedPath
         else { return }
-
-        if onSelectActionType == .rename {
-            guard let newDestinationXcodePath = renameToXcode(xcode: xcode) else { return }
-            installedXcodePath = newDestinationXcodePath
-        }
 
         selectTask?.cancel()
         let taskID = UUID()
@@ -778,13 +781,20 @@ class AppState: ObservableObject {
                 }
             }
             do {
+                var installedXcodePath = installedXcodePath
                 try await installHelperIfNecessaryAsync()
                 try Task.checkCancellation()
+
+                if onSelectActionType == .rename {
+                    guard let newDestinationXcodePath = await renameToXcode(xcode: xcode) else { return }
+                    installedXcodePath = newDestinationXcodePath
+                }
+
                 try await Current.helper.switchXcodePathAsync(installedXcodePath.string)
                 try Task.checkCancellation()
                 await updateSelectedXcodePathAsync()
                 if createSymLinkOnSelect && onSelectActionType != .rename {
-                    createSymbolicLink(to: installedXcodePath)
+                    await createSymbolicLink(to: installedXcodePath)
                 }
             } catch is CancellationError {
             } catch {
@@ -826,25 +836,39 @@ class AppState: ObservableObject {
 
     func createSymbolicLink(xcode: Xcode, isBeta: Bool = false) {
         guard let installedXcodePath = xcode.installedPath else { return }
-        createSymbolicLink(to: installedXcodePath, isBeta: isBeta)
+        Task { @MainActor in
+            await createSymbolicLink(to: installedXcodePath, isBeta: isBeta)
+        }
     }
 
-    func createSymbolicLink(to installedXcodePath: Path, isBeta: Bool = false) {
+    func createSymbolicLink(to installedXcodePath: Path, isBeta: Bool = false) async {
         let destinationPath = Path.installDirectory/"Xcode\(isBeta ? "-Beta" : "").app"
 
         do {
-            let service = XcodeSelectionFilesystemService(
-                installedXcode: { Current.files.installedXcode(destination: $0) }
-            )
-            let result = try service.createSymbolicLink(
-                to: installedXcodePath,
-                in: Path.installDirectory,
-                isBeta: isBeta
-            )
-            if result.replacedExistingSymlink {
-                Logger.appState.info("Successfully deleted old symlink")
+            if Current.helper.usePrivilegedHelperForFileOperations {
+                if Current.files.fileExists(atPath: destinationPath.string) {
+                    let attributes = try FileManager.default.attributesOfItem(atPath: destinationPath.string)
+                    guard attributes[.type] as? FileAttributeType == .typeSymbolicLink else {
+                        throw XcodeSelectionFilesystemError.destinationExistsAndIsNotSymlink(destinationPath)
+                    }
+                }
+                // The helper's createSymbolicLink deletes an existing symlink at the destination before creating the new one.
+                try await Current.helper.createSymbolicLinkAsync(installedXcodePath.string, destinationPath.string)
+                Logger.appState.info("Successfully created symbolic link with Xcode\(isBeta ? "-Beta": "").app")
+            } else {
+                let service = XcodeSelectionFilesystemService(
+                    installedXcode: { Current.files.installedXcode(destination: $0) }
+                )
+                let result = try service.createSymbolicLink(
+                    to: installedXcodePath,
+                    in: Path.installDirectory,
+                    isBeta: isBeta
+                )
+                if result.replacedExistingSymlink {
+                    Logger.appState.info("Successfully deleted old symlink")
+                }
+                Logger.appState.info("Successfully created symbolic link with Xcode\(isBeta ? "-Beta": "").app")
             }
-            Logger.appState.info("Successfully created symbolic link with Xcode\(isBeta ? "-Beta": "").app")
         } catch {
             Logger.appState.error("Unable to create symbolic Link")
             self.error = error
@@ -855,19 +879,31 @@ class AppState: ObservableObject {
         }
     }
 
-    func renameToXcode(xcode: Xcode) -> Path? {
+    func renameToXcode(xcode: Xcode) async -> Path? {
         guard let installedXcodePath = xcode.installedPath else { return nil }
 
         do {
-            let service = XcodeSelectionFilesystemService(
-                installedXcode: { Current.files.installedXcode(destination: $0) }
-            )
-            let renamedPath = try service.renameForSelection(
-                installedXcodePath: installedXcodePath,
-                in: Path.installDirectory
-            )
-            Logger.appState.debug("Renamed selected Xcode to Xcode.app")
-            return renamedPath
+            if Current.helper.usePrivilegedHelperForFileOperations {
+                let destinationPath = Path.installDirectory/"Xcode.app"
+                if Current.files.fileExists(atPath: destinationPath.string),
+                   let originalXcode = Current.files.installedXcode(destination: destinationPath) {
+                    let newName = "Xcode-\(originalXcode.version.descriptionWithoutBuildMetadata).app"
+                    try await Current.helper.renameAsync(destinationPath.string, "\(Path.installDirectory)/\(newName)")
+                }
+                try await Current.helper.renameAsync(installedXcodePath.string, destinationPath.string)
+                Logger.appState.debug("Renamed selected Xcode to Xcode.app")
+                return destinationPath
+            } else {
+                let service = XcodeSelectionFilesystemService(
+                    installedXcode: { Current.files.installedXcode(destination: $0) }
+                )
+                let renamedPath = try service.renameForSelection(
+                    installedXcodePath: installedXcodePath,
+                    in: Path.installDirectory
+                )
+                Logger.appState.debug("Renamed selected Xcode to Xcode.app")
+                return renamedPath
+            }
         } catch {
             Logger.appState.error("Unable to create rename Xcode.app back to original")
             self.error = error
@@ -921,10 +957,16 @@ class AppState: ObservableObject {
         ) else {
             throw FileError.fileNotFound(path.string)
         }
-        _ = try XcodeUninstallService(
-            removeItem: { url in try Current.files.removeItem(at: url) },
-            trashItem: { url in try Current.files.trashItem(at: url) }
-        ).uninstall(xcode, emptyTrash: false)
+
+        if Current.helper.usePrivilegedHelperForFileOperations {
+            try await installHelperIfNecessaryAsync()
+            try await Current.helper.removeAsync(xcode.path.string)
+        } else {
+            _ = try XcodeUninstallService(
+                removeItem: { url in try Current.files.removeItem(at: url) },
+                trashItem: { url in try Current.files.trashItem(at: url) }
+            ).uninstall(xcode, emptyTrash: false)
+        }
     }
 
     private func waitForAuthenticationTerminalState() async throws {
