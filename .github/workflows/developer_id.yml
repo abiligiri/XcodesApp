@@ -53,10 +53,17 @@ jobs:
         run: |
           sudo xcode-select -s /Applications/Xcode_26.5.app
       - name: Archive App
+        env:
+          MACOS_CERTIFICATE_NAME: ${{ secrets.PROD_MACOS_CERTIFICATE_NAME }}
+          PROD_MACOS_NOTARIZATION_TEAM_ID: ${{ secrets.PROD_MACOS_NOTARIZATION_TEAM_ID }}
         run: |
           OUTPUT_DIR=$RUNNER_TEMP/output
           mkdir -p $OUTPUT_DIR
-          xcodebuild archive -project Xcodes.xcodeproj -scheme Xcodes -archivePath $OUTPUT_DIR/Xcodes.xcarchive
+          xcodebuild archive -project Xcodes.xcodeproj -scheme Xcodes -archivePath $OUTPUT_DIR/Xcodes.xcarchive \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY="$MACOS_CERTIFICATE_NAME" \
+            DEVELOPMENT_TEAM="$PROD_MACOS_NOTARIZATION_TEAM_ID" \
+            PROVISIONING_PROFILE_SPECIFIER=""
 
           mkdir -p $OUTPUT_DIR/Product
           xcodebuild -archivePath $OUTPUT_DIR/Xcodes.xcarchive -exportArchive -exportPath $OUTPUT_DIR/Product/Xcodes -exportOptionsPlist "${GITHUB_WORKSPACE}/Scripts/export_options.plist"
