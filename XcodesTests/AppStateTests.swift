@@ -114,7 +114,7 @@ class AppStateTests: XCTestCase {
         XCTAssertNil(subject.presentedAlert)
     }
 
-    func test_CreateSymbolicLink_UsesProvidedInstalledPath() throws {
+    func test_CreateSymbolicLink_UsesProvidedInstalledPath() async throws {
         let installDirectory = try XCTUnwrap(Path(
             NSTemporaryDirectory()
                 .appending("XcodesAppStateTests-")
@@ -129,7 +129,7 @@ class AppStateTests: XCTestCase {
             key == "installPath" ? installDirectory.string : nil
         }
 
-        subject.createSymbolicLink(to: installedXcodePath)
+        await subject.createSymbolicLink(to: installedXcodePath)
 
         let destination = try FileManager.default.destinationOfSymbolicLink(atPath: symlinkPath.string)
         XCTAssertEqual(destination, installedXcodePath.string)
