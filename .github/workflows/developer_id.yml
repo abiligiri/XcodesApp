@@ -87,7 +87,7 @@ jobs:
           mkdir artifacts
           /usr/bin/ditto -c -k --keepParent "$OUTPUT_DIR/Product/Xcodes.app" artifacts/Xcodes.zip
       - name: Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Xcodes.zip
           path: artifacts/Xcodes.zip
