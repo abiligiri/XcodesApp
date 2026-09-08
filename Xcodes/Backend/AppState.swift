@@ -43,7 +43,7 @@ class AppState: ObservableObject {
     @Published var authenticationState: AuthenticationState = .unauthenticated
     @Published var availableXcodes: [AvailableXcode] = [] {
         willSet {
-            if newValue.count > availableXcodes.count && availableXcodes.count != 0 {
+            if !Self.newlyAvailableXcodes(oldXcodes: availableXcodes, newXcodes: newValue).isEmpty {
                 Current.notificationManager.scheduleNotification(title: localizeString("Notification.NewXcodeVersion.Title"), body: localizeString("Notification.NewXcodeVersion.Body"), category: .normal)
             }
             updateAllXcodes(
@@ -56,6 +56,17 @@ class AppState: ObservableObject {
             autoInstallIfNeeded()
         }
     }
+
+    /// Returns the `AvailableXcode`s in `newXcodes` whose `xcodeID` was not present in `oldXcodes`.
+    ///
+    /// Empty when `oldXcodes` is empty, so the initial load (empty -> populated) is NOT treated
+    /// as "a new version since you last looked".
+    static func newlyAvailableXcodes(oldXcodes: [AvailableXcode], newXcodes: [AvailableXcode]) -> [AvailableXcode] {
+        guard !oldXcodes.isEmpty else { return [] }
+        let oldIDs = Set(oldXcodes.map(\.xcodeID))
+        return newXcodes.filter { !oldIDs.contains($0.xcodeID) }
+    }
+
     @Published var allXcodes: [Xcode] = []
     @Published var selectedXcodePath: String? {
         willSet {
