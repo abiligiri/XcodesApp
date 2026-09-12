@@ -51,8 +51,8 @@
         "repositoryURL": "https://github.com/kinoroy/LibFido2Swift",
         "state": {
           "branch": null,
-          "revision": "b87a93300c5b35307c9f26ae490963196bd927f1",
-          "version": "0.1.5"
+          "revision": "ac8596a852e2b008c5902a521cf4d9c7f0f05fba",
+          "version": "0.1.6"
         }
       },
       {
@@ -123,8 +123,8 @@
         "repositoryURL": "https://github.com/XcodesOrg/XcodesKit",
         "state": {
           "branch": null,
-          "revision": "a9e5d7d701f20f1385071851319cdaecccc9f1e8",
-          "version": "1.0.4"
+          "revision": "4d3c6093980978b74c3fa42fc1b90cd1c34ac911",
+          "version": "1.1.0"
         }
       },
       {
@@ -132,7 +132,7 @@
         "repositoryURL": "https://github.com/XcodesOrg/XcodesLoginKit",
         "state": {
           "branch": "main",
-          "revision": "9bece1ada36006b18b84caec62d14dc91b47ae2b",
+          "revision": "929f9aac3140caf7b64cbb5385f4f645c5f9913d",
           "version": null
         }
       },
