@@ -81,7 +81,7 @@ extension Network {
                     }
                 )
             },
-            validateSessionAsync: { },
+            validateSessionAsync: { .unauthenticated },
             signout: { }
         )
     }

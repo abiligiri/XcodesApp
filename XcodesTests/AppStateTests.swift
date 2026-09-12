@@ -336,6 +336,35 @@ class AppStateTests: XCTestCase {
         XCTAssertTrue(Current.network.loginClient.urlSession === replacementSession)
     }
 
+    func test_RestoreAuthenticationStateIfNeeded_UsesPersistedSession() async throws {
+        let appleSession = try JSONDecoder().decode(
+            AppleSession.self,
+            from: Data(#"{"user":{"fullName":"Jane Developer"}}"#.utf8)
+        )
+        let expectedState = AuthenticationState.authenticated(appleSession)
+        Current.defaults.string = { key in
+            key == "username" ? "jane@example.com" : nil
+        }
+        Current.network.validateSessionAsync = { expectedState }
+
+        try await subject.restoreAuthenticationStateIfNeeded()
+
+        XCTAssertEqual(subject.authenticationState, expectedState)
+    }
+
+    func test_RestoreAuthenticationStateIfNeeded_SkipsValidationWithoutSavedUsername() async throws {
+        let didValidate = TestLockedBox(false)
+        Current.network.validateSessionAsync = {
+            didValidate.withValue { $0 = true }
+            return .unauthenticated
+        }
+
+        try await subject.restoreAuthenticationStateIfNeeded()
+
+        XCTAssertFalse(didValidate.read { $0 })
+        XCTAssertEqual(subject.authenticationState, .unauthenticated)
+    }
+
     func test_DownloadRuntimeViaXcodeBuild_ClearsRuntimeTaskWhenComplete() async throws {
         let runtime = try Self.downloadableRuntime()
         subject.downloadableRuntimes = [runtime]
@@ -599,7 +628,7 @@ class AppStateTests: XCTestCase {
                 return true
             }
         }
-        Xcodes.Current.network.validateSessionAsync = { }
+        Xcodes.Current.network.validateSessionAsync = { .unauthenticated }
         Xcodes.Current.network.loadData = { urlRequest in
             if urlRequest.url! == URLRequest.developerDownloads.url! {
                 let downloads = Downloads(resultCode: 0, resultsString: nil, downloads: [Download(name: "Xcode 0.0.0", files: [Download.File(remotePath: "https://apple.com/xcode.xip", fileSize: 9484444)], dateModified: Date())])

@@ -249,6 +249,9 @@ class AppState: ObservableObject {
         }
         setupAutoInstallTimer()
         setupDefaults()
+        startAuthenticationTask {
+            try await self.restoreAuthenticationStateIfNeeded()
+        }
     }
 
     func setupDefaults() {
@@ -286,13 +289,19 @@ class AppState: ObservableObject {
         ).validateADCSession(path: path)
     }
 
-    func validateSessionAsync() async throws {
+    @discardableResult
+    func validateSessionAsync() async throws -> AuthenticationState {
         try await Current.network.validateSessionAsync()
     }
 
     func signInIfNeededAsync() async throws {
         do {
-            try await validateSessionAsync()
+            let authenticationState = try await validateSessionAsync()
+            try Task.checkCancellation()
+            self.authenticationState = authenticationState
+            handleAuthenticationFlowSuccess()
+        } catch is CancellationError {
+            throw CancellationError()
         } catch {
             guard
                 let username = savedUsername,
@@ -303,6 +312,11 @@ class AppState: ObservableObject {
 
             _ = try await signInAsync(username: username, password: password)
         }
+    }
+
+    func restoreAuthenticationStateIfNeeded() async throws {
+        guard hasSavedUsername else { return }
+        try await signInIfNeededAsync()
     }
 
     func signIn(username: String, password: String?) {
@@ -681,6 +695,10 @@ class AppState: ObservableObject {
     func uninstall(xcode: Xcode) {
         guard let installedXcodePath = xcode.installedPath else { return }
 
+        if let index = allXcodes.firstIndex(where: { $0.id == xcode.id }) {
+            allXcodes[index].installState = .uninstalling(installedXcodePath)
+        }
+
         uninstallTask?.cancel()
         let taskID = UUID()
         uninstallTaskID = taskID
@@ -699,6 +717,9 @@ class AppState: ObservableObject {
                 await updateInstalledXcodesAsync()
             } catch is CancellationError {
             } catch {
+                if let index = allXcodes.firstIndex(where: { $0.id == xcode.id }) {
+                    allXcodes[index].installState = .installed(installedXcodePath)
+                }
                 self.error = error
                 self.presentedAlert = .generic(title: localizeString("Alert.Uninstall.Error.Title"), message: error.legibleLocalizedDescription)
             }

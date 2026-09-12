@@ -46,7 +46,16 @@ struct MainWindow: View {
             .toolbar {
                 ToolbarItemGroup {
                     Button(action: { appState.presentedSheet = .signIn }, label: {
-                        Label("Login", systemImage: "person.circle")
+                        Label {
+                            if let authenticatedUserName {
+                                Text(verbatim: authenticatedUserName)
+                            } else {
+                                Text("Login")
+                            }
+                        } icon: {
+                            Image(systemName: "person.circle")
+                        }
+                        .labelStyle(.titleAndIcon)
                     })
                     .help("LoginDescription")
                     if #available(macOS 14, *) {
@@ -93,6 +102,13 @@ struct MainWindow: View {
 
     private var xcode: Xcode? {
         appState.allXcodes.first(where: { $0.id == selectedXcodeID })
+    }
+
+    private var authenticatedUserName: String? {
+        guard case let .authenticated(appleSession) = appState.authenticationState else {
+            return nil
+        }
+        return appleSession.user.fullName ?? appState.savedUsername
     }
 
     private var subtitleText: Text {
